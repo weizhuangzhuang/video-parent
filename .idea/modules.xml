@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapper/mapper.iml" filepath="$PROJECT_DIR$/mapper/mapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mybatis-generatorConfig/mybatis-generatorConfig.iml" filepath="$PROJECT_DIR$/mybatis-generatorConfig/mybatis-generatorConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pojo/pojo.iml" filepath="$PROJECT_DIR$/pojo/pojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/video-parent.iml" filepath="$PROJECT_DIR$/video-parent.iml" />
+    </modules>
+  </component>
+</project>
