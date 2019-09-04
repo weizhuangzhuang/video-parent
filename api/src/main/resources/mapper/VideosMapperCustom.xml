@@ -21,11 +21,14 @@
     <result column="niackname" property="niackname" jdbcType="VARCHAR" />
   </resultMap>
 
-  <select id="queryAllVideos" resultMap="BaseResultMap">
+  <select id="queryAllVideos" resultMap="BaseResultMap" parameterType="String">
     SELECT v.*,u.face_image as face_image,u.nickname as nickname FROM videos v
     LEFT JOIN users u on u.id = v.user_id
     WHERE
           1 = 1
+          <if test="videoDesc !null and videoDesc != '' ">
+            and v.video_desc = like '%{videoDesc}%'
+          </if>
           AND v.status = 1
     ORDER BY v.create_time desc
   </select>

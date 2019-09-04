@@ -3,6 +3,8 @@ package com.wzz.video.service;
 import com.wzz.video.pojo.Videos;
 import com.wzz.video.utils.PagedResult;
 
+import java.util.List;
+
 public interface VideoService {
 
     /**
@@ -18,6 +20,12 @@ public interface VideoService {
      * @param pageSize  每页的记录数
      * @return
      */
-    public PagedResult getAllVideos(Integer page , Integer pageSize);
+    public PagedResult getAllVideos(Videos videos , Integer isSaveRecord , Integer page , Integer pageSize);
+
+    /**
+     * 查询热搜词
+     * @return
+     */
+    public List<String> getHotWords();
 
 }

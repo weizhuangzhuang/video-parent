@@ -3,8 +3,10 @@ package com.wzz.video.service.Impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wzz.video.mapper.SearchRecordsMapper;
 import com.wzz.video.mapper.VideosMapper;
 import com.wzz.video.mapper.VideosMapperCustom;
+import com.wzz.video.pojo.SearchRecords;
 import com.wzz.video.pojo.Videos;
 import com.wzz.video.pojo.vo.VideosVO;
 import com.wzz.video.service.VideoService;
@@ -26,6 +28,9 @@ public class VideoServiceImpl implements VideoService{
     //注入自定义mapper
     @Autowired
     private VideosMapperCustom videosMapperCustom;
+
+    @Autowired
+    private SearchRecordsMapper searchRecordsMapper;
 
     @Autowired
     private Sid sid;
@@ -63,9 +68,19 @@ public class VideoServiceImpl implements VideoService{
 
     @Transactional(propagation =  Propagation.REQUIRED)
     @Override
-    public PagedResult getAllVideos(Integer page, Integer pageSize) {
+    public PagedResult getAllVideos(Videos videos , Integer isSaveRecords , Integer page , Integer pageSize) {
+
+        //保存搜索记录
+        String desc = videos.getVideoDesc();
+        if(isSaveRecords != null &&  isSaveRecords == 1){
+            SearchRecords searchRecords = new SearchRecords();
+            searchRecords.setId(sid.nextShort());
+            searchRecords.setContent(desc);
+            searchRecordsMapper.insert(searchRecords);
+        }
+
         PageHelper.startPage(page , pageSize);
-        List<VideosVO> videosVO = videosMapperCustom.queryAllVideos();
+        List<VideosVO> videosVO = videosMapperCustom.queryAllVideos(desc);
         PageInfo<VideosVO> pageList = new PageInfo<>(videosVO);
 
         PagedResult pagedResult = new PagedResult();
@@ -79,5 +94,11 @@ public class VideoServiceImpl implements VideoService{
         pagedResult.setRows(videosVO);
 
         return pagedResult;
+    }
+
+    @Transactional(propagation =  Propagation.SUPPORTS)
+    @Override
+    public List<String> getHotWords() {
+        return searchRecordsMapper.getHotWords();
     }
 }

@@ -8,10 +8,7 @@ import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -192,17 +189,29 @@ public class VideoController extends BasicController{
         return VideoJSONResult.ok();
     }
 
+    /**
+     * 分页和搜索查询视频列表，保存热搜词
+     * @param videos
+     * @param isSaveRecord  1 - 需要保存    0 - 不需要保存，或者为空的时候
+     * @param page
+     * @return
+     */
     @PostMapping("/showAll")
-    public VideoJSONResult showAll(Integer page){
+    public VideoJSONResult showAll(@RequestBody Videos videos , Integer isSaveRecord ,Integer page){
 
         if(page == null){
             page = 1;
         }
 
         //System.out.println(page);
-        PagedResult allVideos = videoService.getAllVideos(page, PAGE_SIZE);
+        PagedResult allVideos = videoService.getAllVideos(videos , isSaveRecord , page, PAGE_SIZE);
         //System.out.println(allVideos.getTotal());
         return VideoJSONResult.ok(allVideos);
+    }
+
+    @PostMapping("/hot")
+    public VideoJSONResult hot(){
+        return VideoJSONResult.ok(videoService.getHotWords());
     }
 
 }

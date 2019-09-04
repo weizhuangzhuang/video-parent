@@ -14,4 +14,8 @@
     -->
     id, content
   </sql>
+
+  <select id="getHotWords" resultType="String">
+    select content from search_records group by content order by count(content) desc
+  </select>
 </mapper>
