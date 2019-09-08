@@ -2,6 +2,7 @@ package com.wzz.video.controller;
 
 
 import com.wzz.video.pojo.Users;
+import com.wzz.video.pojo.vo.PublisherVideo;
 import com.wzz.video.pojo.vo.UsersVO;
 import com.wzz.video.service.UserService;
 import com.wzz.video.utils.VideoJSONResult;
@@ -96,6 +97,33 @@ public class UserController {
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(userService.queryUserInfo(userId),usersVO);
         return VideoJSONResult.ok(usersVO);
+    }
+
+    /**
+     *  查询发布视频者
+     * @param loginUserId  登录用户的ID
+     * @param videoId      视频ID
+     * @param publishUserId
+     * @return
+     */
+    @PostMapping("/queryPubilsher")
+    public VideoJSONResult queryPubilsher(String loginUserId , String videoId , String publishUserId){
+        if(StringUtils.isAllBlank(publishUserId)){
+            return VideoJSONResult.errorMsg("");
+        }
+        //查询视频发布者的信息
+        Users userInfo = userService.queryUserInfo(publishUserId);
+        UsersVO publisher = new UsersVO();
+        BeanUtils.copyProperties(userInfo , publisher);
+
+        //查询当前登录者和视频的点赞关系
+        boolean userLikeVideo = userService.isUserLikeVideo(loginUserId,videoId);
+
+        PublisherVideo bean = new PublisherVideo();
+        bean.setPublisher(publisher);
+        bean.setUserLikeVideo(userLikeVideo);
+
+        return VideoJSONResult.ok(bean);
     }
 
 }

@@ -171,7 +171,7 @@ public class VideoController extends BasicController{
                     }
                     fileOutputStream = new FileOutputStream(outFile);
                     inputStream = file.getInputStream();
-                    IOUtils.copy(inputStream,fileOutputStream);
+                    IOUtils.copy(inputStream ,fileOutputStream);
                 }else {
                     return VideoJSONResult.errorMsg("上传发生错误....");
                 }

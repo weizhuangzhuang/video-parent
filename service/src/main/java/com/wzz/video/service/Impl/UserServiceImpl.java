@@ -1,8 +1,10 @@
 package com.wzz.video.service.Impl;
 
 
+import com.wzz.video.mapper.UsersLikeVideosMapper;
 import com.wzz.video.mapper.UsersMapper;
 import com.wzz.video.pojo.Users;
+import com.wzz.video.pojo.UsersLikeVideos;
 import com.wzz.video.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private UsersLikeVideosMapper usersLikeVideosMapper;
 
     @Autowired
     private Sid sid;
@@ -79,12 +84,31 @@ public class UserServiceImpl implements UserService {
         usersMapper.updateByExampleSelective(users,userExample);
     }
 
-    @Transactional(propagation =  Propagation.REQUIRED)
+    @Transactional(propagation =  Propagation.SUPPORTS)
     @Override
     public Users queryUserInfo(String userId) {
         Example userExample = new Example(Users.class);
         Criteria criteria = userExample.createCriteria();
         criteria.andEqualTo("id" ,userId);
         return usersMapper.selectOneByExample(userExample);
+    }
+
+    @Transactional(propagation =  Propagation.SUPPORTS)
+    @Override
+    public boolean isUserLikeVideo(String userId, String videoId) {
+        if(StringUtils.isBlank(userId) || StringUtils.isBlank(videoId)){
+            return false;
+        }
+        Example example = new Example(UsersLikeVideos.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId" ,userId);
+        criteria.andEqualTo("videoId" ,videoId);
+
+        List<UsersLikeVideos> list = usersLikeVideosMapper.selectByExample(example);
+
+        if(list != null && list.size() > 0){
+            return true;
+        }
+        return false;
     }
 }
