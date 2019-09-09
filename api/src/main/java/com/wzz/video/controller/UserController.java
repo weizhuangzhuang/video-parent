@@ -108,7 +108,7 @@ public class UserController {
      */
     @PostMapping("/queryPubilsher")
     public VideoJSONResult queryPubilsher(String loginUserId , String videoId , String publishUserId){
-        if(StringUtils.isAllBlank(publishUserId)){
+        if(StringUtils.isBlank(publishUserId)){
             return VideoJSONResult.errorMsg("");
         }
         //查询视频发布者的信息

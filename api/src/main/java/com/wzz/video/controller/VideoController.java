@@ -214,4 +214,16 @@ public class VideoController extends BasicController{
         return VideoJSONResult.ok(videoService.getHotWords());
     }
 
+    @PostMapping("/userLike")
+    public VideoJSONResult userLike(String userId , String videoId , String videoCreaterId){
+        videoService.userLikeVideo(userId , videoId , videoCreaterId);
+        return VideoJSONResult.ok();
+    }
+
+    @PostMapping("/userUnLike")
+    public VideoJSONResult userUnLike(String userId , String videoId , String videoCreaterId){
+        videoService.userUnLikeVideo(userId , videoId , videoCreaterId);
+        return VideoJSONResult.ok();
+    }
+
 }
