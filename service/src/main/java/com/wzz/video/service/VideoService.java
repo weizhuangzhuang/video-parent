@@ -1,5 +1,6 @@
 package com.wzz.video.service;
 
+import com.wzz.video.pojo.Comments;
 import com.wzz.video.pojo.Videos;
 import com.wzz.video.utils.PagedResult;
 
@@ -23,6 +24,17 @@ public interface VideoService {
     public PagedResult getAllVideos(Videos videos , Integer isSaveRecord , Integer page , Integer pageSize);
 
     /**
+     * 分页查询出我喜欢的视频
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize);
+
+    PagedResult queryMyFollowVideos(String userId, Integer page, Integer pageSize);
+
+    /**
      * 查询热搜词
      * @return
      */
@@ -44,4 +56,17 @@ public interface VideoService {
      */
     public void userUnLikeVideo(String userId , String videoId , String videoCreaterId);
 
+    /**
+     * 保存留言
+     * @param comments
+     */
+    public void saveComments(Comments comments);
+
+    /**
+     * 分页获取留言列表
+     * @param videoId
+     * @param page
+     * @param pageSize
+     */
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize);
 }

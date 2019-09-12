@@ -1,5 +1,6 @@
 package com.wzz.video.controller;
 
+import com.wzz.video.pojo.Comments;
 import com.wzz.video.pojo.Videos;
 import com.wzz.video.service.BgmService;
 import com.wzz.video.service.VideoService;
@@ -197,16 +198,69 @@ public class VideoController extends BasicController{
      * @return
      */
     @PostMapping("/showAll")
-    public VideoJSONResult showAll(@RequestBody Videos videos , Integer isSaveRecord ,Integer page){
+    public VideoJSONResult showAll(@RequestBody Videos videos , Integer isSaveRecord ,Integer page , Integer pageSize){
 
         if(page == null){
             page = 1;
         }
 
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+
         //System.out.println(page);
-        PagedResult allVideos = videoService.getAllVideos(videos , isSaveRecord , page, PAGE_SIZE);
+        PagedResult allVideos = videoService.getAllVideos(videos , isSaveRecord , page, pageSize);
         //System.out.println(allVideos.getTotal());
         return VideoJSONResult.ok(allVideos);
+    }
+
+
+    /**
+     * 查询出我喜欢的视频
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("/showMyLike")
+    public VideoJSONResult showMyLike(String userId , Integer page ,Integer pageSize){
+
+        if(page == null){
+            page = 1;
+        }
+
+        if(pageSize == null){
+            pageSize = 6;
+        }
+
+        //System.out.println(page);
+        PagedResult videoList = videoService.queryMyLikeVideos(userId , page , pageSize);
+        //System.out.println(allVideos.getTotal());
+        return VideoJSONResult.ok(videoList);
+    }
+
+    /**
+     * 查询出我喜欢的视频
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("/showMyFollow")
+    public VideoJSONResult showMyFollow(String userId , Integer page ,Integer pageSize){
+
+        if(page == null){
+            page = 1;
+        }
+
+        if(pageSize == null){
+            pageSize = 6;
+        }
+
+        //System.out.println(page);
+        PagedResult videoList = videoService.queryMyFollowVideos(userId , page , pageSize);
+        //System.out.println(allVideos.getTotal());
+        return VideoJSONResult.ok(videoList);
     }
 
     @PostMapping("/hot")
@@ -225,5 +279,30 @@ public class VideoController extends BasicController{
         videoService.userUnLikeVideo(userId , videoId , videoCreaterId);
         return VideoJSONResult.ok();
     }
+
+    //保存留言
+    @PostMapping("/saveComment")
+    public VideoJSONResult saveComment(@RequestBody Comments comments , String fatherCommentId , String toUserId){
+
+        comments.setFatherCommentId(fatherCommentId);
+        comments.setToUserId(toUserId);
+        videoService.saveComments(comments);
+        return VideoJSONResult.ok();
+    }
+
+    @PostMapping("/getVideoComments")
+    public VideoJSONResult getVideoComments(String videoId , Integer page , Integer pageSize){
+        if(page == null){
+            page = 1;
+        }
+
+        if(pageSize == null){
+            pageSize = 10;
+        }
+
+        PagedResult allComments = videoService.getAllComments(videoId, page, pageSize);
+
+        return VideoJSONResult.ok(allComments)
+;    }
 
 }

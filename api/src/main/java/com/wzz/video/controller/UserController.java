@@ -2,6 +2,7 @@ package com.wzz.video.controller;
 
 
 import com.wzz.video.pojo.Users;
+import com.wzz.video.pojo.UsersReport;
 import com.wzz.video.pojo.vo.PublisherVideo;
 import com.wzz.video.pojo.vo.UsersVO;
 import com.wzz.video.service.UserService;
@@ -13,10 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -124,6 +122,32 @@ public class UserController {
         bean.setUserLikeVideo(userLikeVideo);
 
         return VideoJSONResult.ok(bean);
+    }
+
+    @PostMapping("/beyourfans")
+    public VideoJSONResult beyourfans(String userId , String fanId){
+        if(StringUtils.isBlank(userId) && StringUtils.isBlank(fanId)){
+            return VideoJSONResult.errorMsg("");
+        }
+        userService.saveUserFanRelation(userId , fanId);
+        return VideoJSONResult.ok("关注成功");
+    }
+
+    @PostMapping("/dontbeyourfans")
+    public VideoJSONResult dontbeyourfans(String userId , String fanId){
+        if(StringUtils.isBlank(userId) || StringUtils.isBlank(fanId)){
+            return VideoJSONResult.errorMsg("");
+        }
+        userService.deleteUserFanRelation(userId , fanId);
+        return VideoJSONResult.ok("取消关注");
+    }
+
+    @PostMapping("/reportUser")
+    public VideoJSONResult reportUser(@RequestBody UsersReport usersReport){
+        //保存举报信息
+        userService.reportUser(usersReport);
+
+        return VideoJSONResult.errorMsg("举报成功");
     }
 
 }

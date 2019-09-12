@@ -25,7 +25,8 @@ public class WebMvcConfig implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(miniInterceptor()).addPathPatterns("/user/**")
-                 .addPathPatterns("/video/upload", "/video/uploadCover","/video/userLike","video/userUnlike")
+                 .addPathPatterns("/video/upload", "/video/uploadCover",
+                         "/video/userLike","video/userUnlike" , "video/saveComment")
                  .addPathPatterns("/bgm/**")
                  .excludePathPatterns("/user/queryPubilsher");
 

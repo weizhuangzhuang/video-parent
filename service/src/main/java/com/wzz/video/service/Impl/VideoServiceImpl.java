@@ -4,12 +4,15 @@ package com.wzz.video.service.Impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wzz.video.mapper.*;
+import com.wzz.video.pojo.Comments;
 import com.wzz.video.pojo.SearchRecords;
 import com.wzz.video.pojo.UsersLikeVideos;
 import com.wzz.video.pojo.Videos;
+import com.wzz.video.pojo.vo.CommentsVO;
 import com.wzz.video.pojo.vo.VideosVO;
 import com.wzz.video.service.VideoService;
 import com.wzz.video.utils.PagedResult;
+import com.wzz.video.utils.TimeAgoUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,6 +42,12 @@ public class VideoServiceImpl implements VideoService{
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private CommentsMapper commentsMapper;
+
+    @Autowired
+    private CommentsMapperCustom commentsMapperCustom;
 
     @Autowired
     private Sid sid;
@@ -79,7 +89,8 @@ public class VideoServiceImpl implements VideoService{
 
         //保存搜索记录
         String desc = videos.getVideoDesc();
-        if(isSaveRecords != null &&  isSaveRecords == 1){
+        String userId = videos.getUserId();
+        if(isSaveRecords != null && isSaveRecords == 1){
             SearchRecords searchRecords = new SearchRecords();
             searchRecords.setId(sid.nextShort());
             searchRecords.setContent(desc);
@@ -87,7 +98,7 @@ public class VideoServiceImpl implements VideoService{
         }
 
         PageHelper.startPage(page , pageSize);
-        List<VideosVO> videosVO = videosMapperCustom.queryAllVideos(desc);
+        List<VideosVO> videosVO = videosMapperCustom.queryAllVideos(desc , userId);
         PageInfo<VideosVO> pageList = new PageInfo<>(videosVO);
 
         PagedResult pagedResult = new PagedResult();
@@ -99,6 +110,48 @@ public class VideoServiceImpl implements VideoService{
         pagedResult.setTotal(pageList.getPages());
         //每一条结果集
         pagedResult.setRows(videosVO);
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation =  Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize) {
+
+        PageHelper.startPage(page , pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMyLikeVideos(userId);
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        //查几页
+        pagedResult.setPage(page);
+        //总记录数
+        pagedResult.setRecords(pageList.getTotal());
+        //总页数
+        pagedResult.setTotal(pageList.getPages());
+        //每一条结果集
+        pagedResult.setRows(list);
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation =  Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyFollowVideos(String userId, Integer page, Integer pageSize) {
+
+        PageHelper.startPage(page , pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMyFollowVideos(userId);
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        //查几页
+        pagedResult.setPage(page);
+        //总记录数
+        pagedResult.setRecords(pageList.getTotal());
+        //总页数
+        pagedResult.setTotal(pageList.getPages());
+        //每一条结果集
+        pagedResult.setRows(list);
 
         return pagedResult;
     }
@@ -145,5 +198,43 @@ public class VideoServiceImpl implements VideoService{
         videosMapperCustom.reduceVideoLikeCount(videoId);
         //3.用户受喜欢数量减少
         usersMapper.reduceReceiveLikeCount(videoCreaterId);
+    }
+
+    @Transactional(propagation =  Propagation.REQUIRED)
+    @Override
+    public void saveComments(Comments comments) {
+        String cid = sid.nextShort();
+        comments.setId(cid);
+        comments.setCreateTime(new Date());
+        commentsMapper.insert(comments);
+    }
+    @Transactional(propagation =  Propagation.SUPPORTS)
+    @Override
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page , pageSize);
+        Example example = new Example(Comments.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("videoId" ,videoId);
+        List<CommentsVO> comments = commentsMapperCustom.queryComments(videoId);
+
+        for (CommentsVO c : comments) {
+            String timeAgo = TimeAgoUtils.format(c.getCreateTime());
+            c.setTimeAgoStr(timeAgo);
+        }
+        PageInfo<CommentsVO> pageList = new PageInfo<>(comments);
+
+        PagedResult pagedResult = new PagedResult();
+        //查几页
+        pagedResult.setPage(page);
+        //总记录数
+        pagedResult.setRecords(pageList.getTotal());
+        //总页数
+        pagedResult.setTotal(pageList.getPages());
+        //每一条结果集
+        pagedResult.setRows(comments);
+
+        return pagedResult;
+
+
     }
 }

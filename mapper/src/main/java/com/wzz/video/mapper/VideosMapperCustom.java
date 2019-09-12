@@ -9,7 +9,24 @@ import java.util.List;
 
 public interface VideosMapperCustom extends MyMapper<Videos> {
 
-    public List<VideosVO> queryAllVideos(@Param("videoDesc") String videoDesc);
+    /**
+     * @Description: 条件查询所有视频列表
+     */
+    public List<VideosVO> queryAllVideos(@Param("videoDesc") String videoDesc , @Param("userId") String userId);
+
+    /**
+     * 查询点赞视频
+     * @param userId
+     * @return
+     */
+    public List<VideosVO> queryMyLikeVideos(@Param("userId") String userId);
+
+    /**
+     * 查询g关注视频
+     * @param userId
+     * @return
+     */
+    public List<VideosVO> queryMyFollowVideos(@Param("userId") String userId);
 
     /**
      * 对视频喜欢的数量进行累加

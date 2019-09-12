@@ -2,30 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wzz.video.mapper.CommentsMapper" >
   <resultMap id="BaseResultMap" type="com.wzz.video.pojo.Comments" >
-    <!--
-      WARNING - @mbg.generated
-    -->
     <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="father_comment_id" property="fatherCommentId" jdbcType="VARCHAR" />
+    <result column="to_user_id" property="toUserId" jdbcType="VARCHAR" />
     <result column="video_id" property="videoId" jdbcType="VARCHAR" />
     <result column="from_user_id" property="fromUserId" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.wzz.video.pojo.Comments" extends="BaseResultMap" >
-    <!--
-      WARNING - @mbg.generated
-    -->
     <result column="comment" property="comment" jdbcType="LONGVARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, video_id, from_user_id, create_time
-  </sql>
-  <sql id="Blob_Column_List" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    comment
-  </sql>
 </mapper>

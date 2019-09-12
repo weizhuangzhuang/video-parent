@@ -1,6 +1,7 @@
 package com.wzz.video.service;
 
 import com.wzz.video.pojo.Users;
+import com.wzz.video.pojo.UsersReport;
 
 public interface UserService {
 
@@ -51,4 +52,24 @@ public interface UserService {
      * @return
      */
     public boolean isUserLikeVideo(String loginUserId , String videoId);
+
+    /**
+     * 增加用户和粉丝的关系
+     * @param userId
+     * @param fanId
+     */
+    public void saveUserFanRelation(String userId , String fanId);
+
+    /**
+     * 取消用户和粉丝的关系
+     * @param userId
+     * @param fanId
+     */
+    public void deleteUserFanRelation(String userId , String fanId);
+
+    /**
+     * 举报用户接口
+     * @param usersReport
+     */
+    public void reportUser(UsersReport usersReport);
 }
