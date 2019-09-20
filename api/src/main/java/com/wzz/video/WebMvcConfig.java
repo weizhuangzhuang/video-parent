@@ -14,7 +14,12 @@ public class WebMvcConfig implements WebMvcConfigurer{
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/META-INF/resources/")
-                .addResourceLocations("file:D:/wzz_videos_dev/");
+                .addResourceLocations("file:C:/wzz_videos_dev/");
+    }
+
+    @Bean(initMethod = "init")
+    public ZKCuratorClient zkCuratorClient(){
+        return new ZKCuratorClient();
     }
 
     @Bean

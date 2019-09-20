@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ import java.io.*;
 @RestController
 @Api(value = "用户相关业务的接口", tags = {"用户相关业务的controller"})
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BasicController{
 
     @Autowired
     private UserService userService;
@@ -41,7 +42,7 @@ public class UserController {
         InputStream inputStream = null;
 
         //所有文件的上传路径
-        String fileSpace = "D:/wzz_videos_dev";
+        String fileSpace = FILE_SPACE;
         //保存在数据库中的相对路径
         String uploadPathDB = "/" + userId + "/face/";
         try{
